@@ -3,6 +3,7 @@ import { url } from "../utils/url";
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import CtaBanner from "../components/CtaBanner.astro";
+import ControlChart from "../components/ControlChart.astro";
 import { site } from "../data/site";
 import { valueProps, steps, stats, testimonials, sectors } from "../data/home";
 
@@ -13,44 +14,47 @@ const articles = (await getCollection("articles", ({ data }) => !data.draft))
 ---
 
 <BaseLayout title={site.name}>
-  <section class="hero section">
-    <div class="container hero__grid">
-      <div>
-        <span class="eyebrow">{site.tagline}</span>
-        <h1>Des processus plus simples. Des équipes plus engagées. Des résultats qui durent.</h1>
-        <p class="lead">
-          J'accompagne les organisations du Québec qui veulent améliorer leur performance, avec une approche Lean Six
-          Sigma rigoureuse et profondément humaine.
-        </p>
-        <div class="btn-row">
-          <a class="btn btn--primary" href={url(site.cta.href)}>{site.cta.label}</a>
-          <a class="btn btn--outline" href={url("/services")}>Découvrir les services</a>
+  <section class="hero">
+    <div class="container">
+      <div class="hero__top">
+        <div>
+          <span class="eyebrow">Lean Six Sigma · Québec</span>
+          <h1>Moins de variation.<br />Plus de <span class="mark">résultats</span>.</h1>
+        </div>
+        <div class="hero__aside">
+          <p class="lead">
+            J'aide les organisations du Québec à rendre leurs processus plus simples, plus fiables et plus rapides, avec
+            les données comme boussole et les équipes comme moteur.
+          </p>
+          <div class="btn-row">
+            <a class="btn btn--primary" href={url(site.cta.href)}>{site.cta.label}</a>
+            <a class="btn btn--outline" href={url("/services")}>Voir les services</a>
+          </div>
         </div>
       </div>
-      <div class="hero__visual" role="img" aria-label="Emplacement de la photo professionnelle d'Emna Ladhib">
-        <span>Photo professionnelle<br />(à fournir)</span>
-      </div>
+      <ControlChart />
+      <p class="hero__signature mono">{site.name}, {site.credentials} · Lean Six Sigma Black Belt</p>
     </div>
   </section>
 
-  <section class="section section--alt">
+  <section class="section">
     <div class="container">
       <div class="section-head">
         <span class="eyebrow">Pourquoi travailler ensemble</span>
         <h2>L'amélioration continue, sans jargon inutile</h2>
       </div>
-      <div class="grid">
+      <div class="pillars">
         {valueProps.map((v) => (
-          <article class="card">
+          <article>
             <h3>{v.title}</h3>
-            <p>{v.text}</p>
+            <p class="muted">{v.text}</p>
           </article>
         ))}
       </div>
     </div>
   </section>
 
-  <section class="section">
+  <section class="section section--alt">
     <div class="container">
       <div class="section-head">
         <span class="eyebrow">Services</span>
@@ -59,28 +63,29 @@ const articles = (await getCollection("articles", ({ data }) => !data.draft))
       </div>
       <div class="grid">
         {services.map((s) => (
-          <a class="card card--link" href={url(`/services/${s.id}`)}>
+          <a class="card card--link service" href={url(`/services/${s.id}`)}>
             <h3>{s.data.title}</h3>
-            <p>{s.data.summary}</p>
-            <span class="more">En savoir plus →</span>
+            <p class="muted">{s.data.summary}</p>
+            <span class="more">En savoir plus <span aria-hidden="true">→</span></span>
           </a>
         ))}
       </div>
     </div>
   </section>
 
-  <section class="section section--alt">
+  <section class="section">
     <div class="container">
       <div class="section-head">
-        <span class="eyebrow">Ma démarche</span>
+        <span class="eyebrow">La démarche DMAIC</span>
         <h2>Une méthode éprouvée, adaptée à votre réalité</h2>
       </div>
-      <ol class="steps">
+      <ol class="dmaic">
         {steps.map((s) => (
-          <li class="card">
-            <span class="number">{s.number}</span>
+          <li>
+            <span class="dmaic__letter" aria-hidden="true">{s.method[0]}</span>
+            <span class="dmaic__method mono">{s.method}</span>
             <h3>{s.title}</h3>
-            <p>{s.text}</p>
+            <p class="muted">{s.text}</p>
           </li>
         ))}
       </ol>
@@ -88,16 +93,16 @@ const articles = (await getCollection("articles", ({ data }) => !data.draft))
     </div>
   </section>
 
-  <section class="section">
+  <section class="section section--alt">
     <div class="container">
-      <div class="stats">
+      <dl class="stats">
         {stats.map((s) => (
           <div>
-            <strong class="stats__value">{s.value}</strong>
-            <span class="muted">{s.label}</span>
+            <dt class="muted">{s.label}</dt>
+            <dd>{s.value}</dd>
           </div>
         ))}
-      </div>
+      </dl>
       <p class="placeholder-note">Chiffres à confirmer avec la cliente avant publication.</p>
       <div class="sectors">
         <span class="eyebrow">Secteurs d'intervention</span>
@@ -106,7 +111,7 @@ const articles = (await getCollection("articles", ({ data }) => !data.draft))
     </div>
   </section>
 
-  <section class="section section--alt">
+  <section class="section">
     <div class="container">
       <div class="section-head">
         <span class="eyebrow">Témoignages</span>
@@ -114,11 +119,10 @@ const articles = (await getCollection("articles", ({ data }) => !data.draft))
       </div>
       <div class="grid grid--2">
         {testimonials.map((t) => (
-          <figure class="card">
-            <blockquote>« {t.quote} »</blockquote>
+          <figure class="quote">
+            <blockquote>{t.quote}</blockquote>
             <figcaption>
               <strong>{t.author}</strong>
-              <br />
               <span class="muted">{t.role}</span>
             </figcaption>
           </figure>
@@ -127,7 +131,7 @@ const articles = (await getCollection("articles", ({ data }) => !data.draft))
     </div>
   </section>
 
-  <section class="section">
+  <section class="section section--alt">
     <div class="container">
       <div class="section-head">
         <span class="eyebrow">Ressources</span>
@@ -136,10 +140,10 @@ const articles = (await getCollection("articles", ({ data }) => !data.draft))
       <div class="grid">
         {articles.map((a) => (
           <a class="card card--link" href={url(`/ressources/${a.id}`)}>
-            <span class="tag">{a.data.category}</span>
+            <div><span class="tag">{a.data.category}</span></div>
             <h3>{a.data.title}</h3>
-            <p>{a.data.summary}</p>
-            <span class="more">Lire l'article →</span>
+            <p class="muted">{a.data.summary}</p>
+            <span class="more">Lire l'article <span aria-hidden="true">→</span></span>
           </a>
         ))}
       </div>
@@ -150,18 +154,42 @@ const articles = (await getCollection("articles", ({ data }) => !data.draft))
 </BaseLayout>
 
 <style>
-  .hero__grid { display: grid; gap: 3rem; grid-template-columns: 1.2fr 0.8fr; align-items: center; }
-  .hero h1 { font-size: var(--text-3xl); max-width: 18ch; }
-  .hero__visual { display: grid; place-items: center; aspect-ratio: 4 / 5; border-radius: var(--radius-lg); background: var(--color-surface-alt); border: 1px dashed var(--color-border); color: var(--color-text-muted); text-align: center; }
-  .steps { list-style: none; padding: 0; margin: 0 0 2rem; display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); }
-  .stats { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); margin-bottom: 1.5rem; }
-  .stats > div { display: grid; gap: 0.25rem; }
-  .stats__value { font-family: var(--font-heading); font-size: var(--text-3xl); font-weight: 500; color: var(--color-primary); line-height: 1; }
+  .hero { padding-block: clamp(3rem, 7vw, 6rem) 0; }
+  .hero__top { display: grid; grid-template-columns: 1.35fr 1fr; gap: clamp(1.5rem, 4vw, 4rem); align-items: end; margin-bottom: clamp(2rem, 4vw, 3.5rem); }
+  .hero h1 { margin: 0; }
+  .hero__aside .lead { margin: 0; }
+  .hero__signature { margin: 1rem 0 0; color: var(--color-text-muted); font-size: var(--text-xs); letter-spacing: 0.06em; }
+
+  .pillars { display: grid; gap: clamp(1.5rem, 3vw, 3rem); grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
+  .pillars article { padding-top: 1.25rem; border-top: 3px solid var(--color-ink); }
+
+  .service h3 { font-size: clamp(1.6rem, 1.3rem + 1vw, 2.1rem); }
+
+  .dmaic { list-style: none; margin: 0 0 2.5rem; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); counter-reset: none; }
+  .dmaic li { position: relative; padding: 0 1.25rem 0 0; }
+  .dmaic li + li { padding-left: 1.25rem; border-left: 1px solid var(--color-border); }
+  .dmaic__letter { display: block; margin-bottom: 0.75rem; font-family: var(--font-heading); font-stretch: 125%; font-weight: 800; font-size: clamp(3.5rem, 6vw, 5.5rem); line-height: 0.9; color: var(--color-ink); }
+  .dmaic li:hover .dmaic__letter { text-shadow: 0.06em 0.06em 0 var(--color-signal); }
+  .dmaic__method { display: block; margin-bottom: 0.4rem; color: var(--color-text-muted); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.1em; }
+  .dmaic h3 { font-size: var(--text-lg); }
+  .dmaic p { font-size: var(--text-sm); }
+
+  .stats { display: grid; gap: 0; margin: 0 0 1.5rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+  .stats > div { display: flex; flex-direction: column-reverse; gap: 0.5rem; padding: 1.25rem 1.5rem 1.25rem 0; border-top: 3px solid var(--color-ink); }
+  .stats dd { margin: 0; font-family: var(--font-heading); font-stretch: var(--heading-stretch); font-weight: 800; font-size: var(--text-3xl); line-height: 1; }
+  .stats dt { max-width: 26ch; font-size: var(--text-sm); }
   .sectors { margin-top: 3rem; }
-  blockquote { margin: 0 0 1.25rem; font-family: var(--font-heading); font-size: var(--text-lg); }
-  figure { margin: 0; }
+
+  .quote { margin: 0; padding: clamp(1.5rem, 3vw, 2.25rem); background: var(--color-surface); border-left: 5px solid var(--color-signal); border-radius: 0 var(--radius-md) var(--radius-md) 0; }
+  .quote blockquote { margin: 0 0 1.5rem; font-family: var(--font-heading); font-stretch: 105%; font-weight: 500; font-size: var(--text-xl); line-height: 1.35; letter-spacing: -0.01em; }
+  .quote figcaption { display: grid; font-size: var(--text-sm); }
+
+  @media (max-width: 960px) {
+    .dmaic { grid-template-columns: 1fr; gap: 0; }
+    .dmaic li, .dmaic li + li { display: grid; grid-template-columns: 4.5rem 1fr; column-gap: 1rem; padding: 1.25rem 0; border-left: 0; border-top: 1px solid var(--color-border); }
+    .dmaic__letter { grid-row: span 3; font-size: 3.5rem; }
+  }
   @media (max-width: 800px) {
-    .hero__grid { grid-template-columns: 1fr; }
-    .hero__visual { aspect-ratio: 16 / 10; }
+    .hero__top { grid-template-columns: 1fr; align-items: start; }
   }
 </style>

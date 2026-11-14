@@ -1,40 +1,49 @@
 /*
- * CHARTE GRAPHIQUE PROVISOIRE
+ * CHARTE GRAPHIQUE
+ * Direction : « atelier d'amélioration continue » — ardoise, papier froid, ruban jaune de marquage 5S.
  * Toutes les couleurs, polices, rayons et espacements du site viennent d'ici.
- * Pour changer l'identité visuelle, modifier UNIQUEMENT ce fichier.
  */
 :root {
   /* Couleurs de marque */
-  --color-primary: #1f4d45;        /* vert profond : boutons, liens, accents */
+  --color-ink: #15212b;            /* ardoise : texte, boutons, sections sombres */
+  --color-signal: #f5c518;         /* ruban jaune 5S : accent signature, à utiliser avec retenue */
+  --color-signal-soft: #fdf3c4;
+  --color-defect: #d64933;         /* rouge « défaut » : réservé aux points hors contrôle */
+
+  /* Alias sémantiques utilisés par les composants */
+  --color-primary: var(--color-ink);
   --color-primary-contrast: #ffffff;
-  --color-accent: #e07a5f;         /* corail : détails, puces, numéros */
-  --color-accent-soft: #fbe9e3;
+  --color-accent: var(--color-signal);
+  --color-accent-soft: var(--color-signal-soft);
 
   /* Neutres */
-  --color-bg: #fafaf7;
+  --color-bg: #f4f6f5;
   --color-surface: #ffffff;
-  --color-surface-alt: #eef1ec;
-  --color-text: #1b2422;
-  --color-text-muted: #5b6662;
-  --color-border: #dfe3dc;
+  --color-surface-alt: #e9edec;
+  --color-text: var(--color-ink);
+  --color-text-muted: #56636b;
+  --color-border: #d3dadb;
 
   /* Typographie */
-  --font-heading: "Fraunces", Georgia, "Times New Roman", serif;
-  --font-body: "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-heading: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", monospace;
+  --heading-stretch: 118%;
+  --text-xs: 0.75rem;
   --text-sm: 0.875rem;
-  --text-base: 1rem;
-  --text-lg: 1.125rem;
-  --text-xl: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem);
-  --text-2xl: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem);
-  --text-3xl: clamp(2.25rem, 1.6rem + 3vw, 3.75rem);
+  --text-base: 1.0625rem;
+  --text-lg: 1.1875rem;
+  --text-xl: clamp(1.3rem, 1.15rem + 0.6vw, 1.6rem);
+  --text-2xl: clamp(1.9rem, 1.4rem + 2vw, 3rem);
+  --text-3xl: clamp(2.6rem, 1.6rem + 4.6vw, 5.4rem);
 
   /* Formes et espacements */
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-lg: 20px;
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
   --radius-pill: 999px;
-  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px rgb(0 0 0 / 0.06);
-  --container: 1160px;
-  --gutter: clamp(1rem, 4vw, 2rem);
-  --section-space: clamp(4rem, 8vw, 7rem);
+  --shadow-card: 0 1px 0 var(--color-border), 0 12px 32px rgb(21 33 43 / 0.08);
+  --container: 1200px;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --section-space: clamp(4.5rem, 9vw, 8rem);
 }

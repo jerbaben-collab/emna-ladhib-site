@@ -1,0 +1,90 @@
+---
+// Carte de contrôle (SPC) : un processus instable devient stable et prévisible après un projet DMAIC.
+// Élément signature de l'accueil. Données illustratives, pas des résultats réels.
+const W = 1000;
+const CENTER = 140;
+const before = [35, -52, 82, -20, -80, 55, -40, 92, -66, 30];
+const after = [12, -8, 15, -14, 6, -5, 10, -9, 4, -3, 7, -6, 2];
+const STEP = 40;
+const SPLIT = 440;
+const LIMIT_BEFORE = 70;
+const LIMIT_AFTER = 24;
+
+const points = [
+  ...before.map((v, i) => ({ x: 40 + i * STEP, v, out: Math.abs(v) > LIMIT_BEFORE })),
+  ...after.map((v, i) => ({ x: SPLIT + 40 + i * STEP, v, out: false })),
+];
+const y = (v: number) => CENTER - v;
+const path = points.map((p) => `${p.x},${y(p.v)}`).join(" ");
+---
+
+<figure class="chart">
+  <svg viewBox={`0 0 ${W} 280`} role="img" aria-labelledby="chart-title chart-desc">
+    <title id="chart-title">Carte de contrôle : avant et après un projet d'amélioration</title>
+    <desc id="chart-desc">
+      Avant le projet, les mesures varient fortement et trois points sortent des limites de contrôle. Après le projet,
+      la variation est faible et toutes les mesures restent à l'intérieur de limites plus serrées.
+    </desc>
+
+    <!-- Zone stable après le projet -->
+    <rect class="band" x={SPLIT} y={y(LIMIT_AFTER)} width={W - SPLIT} height={LIMIT_AFTER * 2} />
+
+    <!-- Limites de contrôle -->
+    <line class="limit" x1="0" x2={SPLIT} y1={y(LIMIT_BEFORE)} y2={y(LIMIT_BEFORE)} />
+    <line class="limit" x1="0" x2={SPLIT} y1={y(-LIMIT_BEFORE)} y2={y(-LIMIT_BEFORE)} />
+    <line class="limit" x1={SPLIT} x2={W} y1={y(LIMIT_AFTER)} y2={y(LIMIT_AFTER)} />
+    <line class="limit" x1={SPLIT} x2={W} y1={y(-LIMIT_AFTER)} y2={y(-LIMIT_AFTER)} />
+    <line class="center" x1="0" x2={W} y1={CENTER} y2={CENTER} />
+
+    <!-- Intervention -->
+    <line class="split" x1={SPLIT} x2={SPLIT} y1="14" y2="266" />
+    <text class="label label--split" x={SPLIT + 10} y="30">Projet DMAIC</text>
+
+    <text class="label" x="6" y={y(LIMIT_BEFORE) - 8}>LSC</text>
+    <text class="label" x="6" y={CENTER - 8}>LC</text>
+    <text class="label" x="6" y={y(-LIMIT_BEFORE) + 20}>LIC</text>
+    <text class="label label--phase" x={SPLIT - 12} y="266" text-anchor="end">Avant</text>
+    <text class="label label--phase" x={W - 6} y="266" text-anchor="end">Après</text>
+
+    <polyline class="line" points={path} pathLength="1" />
+    {
+      points.map((p, i) => (
+        <circle
+          class:list={["pt", { "pt--out": p.out }]}
+          cx={p.x}
+          cy={y(p.v)}
+          r={p.out ? 8 : 5.5}
+          style={`--i:${i}`}
+        />
+      ))
+    }
+  </svg>
+  <figcaption class="chart__caption">
+    <span>Carte de contrôle</span>
+    <span>Moins de variation = un processus prévisible</span>
+  </figcaption>
+</figure>
+
+<style>
+  .chart { margin: 0; padding: clamp(0.75rem, 2vw, 1.5rem) clamp(0.75rem, 2vw, 1.5rem) 0.75rem; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); }
+  svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .band { fill: var(--color-signal); opacity: 0.28; }
+  .limit { stroke: var(--color-text-muted); stroke-width: 1.5; stroke-dasharray: 8 7; }
+  .center { stroke: var(--color-border); stroke-width: 1.5; }
+  .split { stroke: var(--color-ink); stroke-width: 2; }
+  .label { fill: var(--color-text-muted); font-family: var(--font-mono); font-size: 15px; letter-spacing: 0.06em; }
+  .label--split { fill: var(--color-ink); font-weight: 500; }
+  .label--phase { fill: var(--color-ink); text-transform: uppercase; }
+  .line { fill: none; stroke: var(--color-ink); stroke-width: 2.5; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 2.4s cubic-bezier(0.6, 0, 0.3, 1) 0.2s forwards; }
+  .pt { fill: var(--color-surface); stroke: var(--color-ink); stroke-width: 2.5; opacity: 0; animation: pop 0.3s ease forwards; animation-delay: calc(0.3s + var(--i) * 0.09s); }
+  .pt--out { fill: var(--color-defect); stroke: var(--color-defect); }
+  .chart__caption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.25rem 1rem; padding-top: 0.75rem; margin-top: 0.5rem; border-top: 1px solid var(--color-border); color: var(--color-text-muted); font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: 0.04em; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  @keyframes pop { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: none; } }
+  .pt { transform-box: fill-box; transform-origin: center; }
+  @media (max-width: 640px) { .label { font-size: 24px; } .label--split { font-size: 22px; } }
+  @media (prefers-reduced-motion: reduce) {
+    .line { stroke-dashoffset: 0; }
+    .pt { opacity: 1; }
+  }
+</style>
