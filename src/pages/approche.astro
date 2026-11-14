@@ -1,0 +1,80 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import CtaBanner from "../components/CtaBanner.astro";
+import { steps, valueProps } from "../data/home";
+---
+
+<BaseLayout
+  title="Ma démarche"
+  description="Une démarche d'amélioration continue en 5 étapes, inspirée du DMAIC Lean Six Sigma : comprendre, observer, analyser, améliorer, pérenniser."
+>
+  <PageHero
+    eyebrow="Démarche"
+    title="Partir du terrain pour obtenir des résultats durables"
+    lead="Chaque organisation est unique. Ma démarche s'appuie sur la rigueur du Lean Six Sigma, mais elle commence toujours par l'écoute de votre réalité."
+  />
+
+  <section class="section">
+    <div class="container">
+      <ol class="timeline">
+        {steps.map((s) => (
+          <li>
+            <span class="number">{s.number}</span>
+            <div>
+              <h2>{s.title}</h2>
+              <p class="muted">Étape DMAIC : {s.method}</p>
+              <p>{s.text}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Mes principes</span>
+        <h2>Ce qui guide chaque mandat</h2>
+      </div>
+      <div class="grid">
+        {valueProps.map((v) => (
+          <article class="card">
+            <h3>{v.title}</h3>
+            <p>{v.text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container grid grid--2">
+      <div>
+        <span class="eyebrow">Lean + Six Sigma</span>
+        <h2>Deux approches complémentaires</h2>
+      </div>
+      <div>
+        <p>
+          Le <strong>Lean</strong> vise à éliminer les gaspillages et à fluidifier le travail pour livrer plus de valeur au
+          client, plus rapidement.
+        </p>
+        <p>
+          Le <strong>Six Sigma</strong> s'appuie sur les données pour réduire la variabilité et les erreurs, et rendre
+          les processus fiables et prévisibles.
+        </p>
+        <p>Combinées, elles permettent d'aller plus vite <em>et</em> de faire mieux, du premier coup.</p>
+      </div>
+    </div>
+  </section>
+
+  <CtaBanner />
+</BaseLayout>
+
+<style>
+  .timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: 2.5rem; max-width: 820px; }
+  .timeline li { display: grid; grid-template-columns: 4rem 1fr; gap: 1rem; padding-bottom: 2.5rem; border-bottom: 1px solid var(--color-border); }
+  .timeline .number { font-size: var(--text-2xl); }
+  .timeline h2 { font-size: var(--text-xl); margin-bottom: 0.25rem; }
+</style>

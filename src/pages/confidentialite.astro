@@ -1,0 +1,45 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import { site } from "../data/site";
+---
+
+<BaseLayout title="Politique de confidentialité" description="Politique de confidentialité et protection des renseignements personnels.">
+  <PageHero eyebrow="Légal" title="Politique de confidentialité">
+    <p class="placeholder-note">
+      Modèle de départ à faire valider. La Loi 25 (Québec) exige notamment de désigner une personne responsable de la
+      protection des renseignements personnels et de publier ses coordonnées.
+    </p>
+  </PageHero>
+
+  <section class="section">
+    <div class="container prose">
+      <h2>Responsable de la protection des renseignements personnels</h2>
+      <p>{site.name} — <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a></p>
+
+      <h2>Renseignements recueillis</h2>
+      <p>
+        Par le formulaire de contact : nom, courriel, organisation, téléphone et message. Par l'infolettre : courriel
+        uniquement.
+      </p>
+
+      <h2>Finalités</h2>
+      <p>
+        Répondre à vos demandes et, si vous y avez consenti, vous envoyer l'infolettre. Vos renseignements ne sont
+        jamais vendus ni partagés à des fins commerciales.
+      </p>
+
+      <h2>Conservation</h2>
+      <p>[Durée de conservation à préciser.]</p>
+
+      <h2>Témoins (cookies) et mesure d'audience</h2>
+      <p>[À préciser selon l'outil d'analyse retenu. Aucun témoin non essentiel ne doit être déposé sans consentement.]</p>
+
+      <h2>Vos droits</h2>
+      <p>
+        Vous pouvez demander l'accès, la rectification ou la suppression de vos renseignements, ou retirer votre
+        consentement, en écrivant à l'adresse ci-dessus.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

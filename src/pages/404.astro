@@ -1,0 +1,14 @@
+---
+import { url } from "../utils/url";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+---
+
+<BaseLayout title="Page introuvable">
+  <PageHero eyebrow="Erreur 404" title="Cette page n'existe pas (ou plus)" lead="Le lien est peut-être erroné, ou la page a été déplacée.">
+    <div class="btn-row">
+      <a class="btn btn--primary" href={url("/")}>Retour à l'accueil</a>
+      <a class="btn btn--outline" href={url("/contact")}>Me contacter</a>
+    </div>
+  </PageHero>
+</BaseLayout>

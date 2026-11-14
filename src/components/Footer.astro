@@ -1,0 +1,44 @@
+---
+import { url } from "../utils/url";
+import { footerNav, site } from "../data/site";
+import Newsletter from "./Newsletter.astro";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container footer__grid">
+    <div>
+      <p class="footer__name">{site.name}, {site.credentials}</p>
+      <p class="muted">{site.tagline}<br />{site.contact.region}</p>
+      <p>
+        <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a><br />
+        <a href={`tel:${site.contact.phone.replace(/[^\d+]/g, "")}`}>{site.contact.phone}</a>
+      </p>
+      <a href={site.social.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+    </div>
+
+    <nav aria-label="Navigation du pied de page">
+      <p class="footer__title">Navigation</p>
+      <ul>
+        {footerNav.map((item) => <li><a href={url(item.href)}>{item.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <Newsletter />
+  </div>
+
+  <div class="container footer__bottom">
+    <span>© {year} {site.name}. Tous droits réservés.</span>
+    <a href={url("/confidentialite")}>Politique de confidentialité</a>
+  </div>
+</footer>
+
+<style>
+  .footer { padding-top: 3.5rem; background: var(--color-surface); border-top: 1px solid var(--color-border); font-size: var(--text-sm); }
+  .footer__grid { display: grid; gap: 2.5rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+  .footer__name, .footer__title { font-weight: 600; margin-bottom: 0.75rem; }
+  .footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.4rem; }
+  .footer a { color: var(--color-text); }
+  .footer__bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; margin-top: 3rem; padding-block: 1.5rem; border-top: 1px solid var(--color-border); color: var(--color-text-muted); }
+</style>

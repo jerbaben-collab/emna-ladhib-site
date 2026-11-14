@@ -1,0 +1,54 @@
+---
+import { url } from "../../utils/url";
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import CtaBanner from "../../components/CtaBanner.astro";
+
+export async function getStaticPaths() {
+  const formations = await getCollection("formations");
+  return formations.map((formation) => ({ params: { slug: formation.id }, props: { formation } }));
+}
+
+const { formation } = Astro.props;
+const { Content } = await render(formation);
+const { title, summary, level, duration, format, audience, objectives, certification } = formation.data;
+---
+
+<BaseLayout title={`Formation ${title}`} description={summary}>
+  <PageHero eyebrow="Formation" title={title} lead={summary} />
+
+  <section class="section">
+    <div class="container layout">
+      <div class="prose">
+        <Content />
+        <h2>Objectifs</h2>
+        <ul class="check-list">{objectives.map((o) => <li>{o}</li>)}</ul>
+      </div>
+
+      <aside class="card facts" aria-label="Informations pratiques">
+        <dl>
+          <dt>Niveau</dt><dd>{level}</dd>
+          <dt>Durée</dt><dd>{duration}</dd>
+          <dt>Formats</dt><dd>{format.join(", ")}</dd>
+          <dt>Public</dt><dd>{audience}</dd>
+          {certification && (<><dt>Certification</dt><dd>{certification}</dd></>)}
+        </dl>
+        <a class="btn btn--primary" href={url(`/contact?sujet=${encodeURIComponent(`Formation : ${title}`)}`)}>
+          Demander cette formation
+        </a>
+      </aside>
+    </div>
+  </section>
+
+  <CtaBanner />
+</BaseLayout>
+
+<style>
+  .layout { display: grid; gap: 2.5rem; grid-template-columns: 1fr 320px; align-items: start; }
+  .facts { position: sticky; top: 96px; }
+  dl { margin: 0 0 1.5rem; }
+  dt { font-size: var(--text-sm); font-weight: 600; color: var(--color-text-muted); }
+  dd { margin: 0 0 0.9rem; }
+  @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } .facts { position: static; } }
+</style>

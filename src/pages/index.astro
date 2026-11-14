@@ -1,0 +1,167 @@
+---
+import { url } from "../utils/url";
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CtaBanner from "../components/CtaBanner.astro";
+import { site } from "../data/site";
+import { valueProps, steps, stats, testimonials, sectors } from "../data/home";
+
+const services = (await getCollection("services")).sort((a, b) => a.data.order - b.data.order);
+const articles = (await getCollection("articles", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+---
+
+<BaseLayout title={site.name}>
+  <section class="hero section">
+    <div class="container hero__grid">
+      <div>
+        <span class="eyebrow">{site.tagline}</span>
+        <h1>Des processus plus simples. Des équipes plus engagées. Des résultats qui durent.</h1>
+        <p class="lead">
+          J'accompagne les organisations du Québec qui veulent améliorer leur performance, avec une approche Lean Six
+          Sigma rigoureuse et profondément humaine.
+        </p>
+        <div class="btn-row">
+          <a class="btn btn--primary" href={url(site.cta.href)}>{site.cta.label}</a>
+          <a class="btn btn--outline" href={url("/services")}>Découvrir les services</a>
+        </div>
+      </div>
+      <div class="hero__visual" role="img" aria-label="Emplacement de la photo professionnelle d'Emna Ladhib">
+        <span>Photo professionnelle<br />(à fournir)</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Pourquoi travailler ensemble</span>
+        <h2>L'amélioration continue, sans jargon inutile</h2>
+      </div>
+      <div class="grid">
+        {valueProps.map((v) => (
+          <article class="card">
+            <h3>{v.title}</h3>
+            <p>{v.text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Services</span>
+        <h2>Trois façons de vous accompagner</h2>
+        <p class="lead">Selon votre maturité et vos objectifs, on choisit ensemble la formule la plus utile.</p>
+      </div>
+      <div class="grid">
+        {services.map((s) => (
+          <a class="card card--link" href={url(`/services/${s.id}`)}>
+            <h3>{s.data.title}</h3>
+            <p>{s.data.summary}</p>
+            <span class="more">En savoir plus →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Ma démarche</span>
+        <h2>Une méthode éprouvée, adaptée à votre réalité</h2>
+      </div>
+      <ol class="steps">
+        {steps.map((s) => (
+          <li class="card">
+            <span class="number">{s.number}</span>
+            <h3>{s.title}</h3>
+            <p>{s.text}</p>
+          </li>
+        ))}
+      </ol>
+      <a class="btn btn--outline" href={url("/approche")}>Voir la démarche en détail</a>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="stats">
+        {stats.map((s) => (
+          <div>
+            <strong class="stats__value">{s.value}</strong>
+            <span class="muted">{s.label}</span>
+          </div>
+        ))}
+      </div>
+      <p class="placeholder-note">Chiffres à confirmer avec la cliente avant publication.</p>
+      <div class="sectors">
+        <span class="eyebrow">Secteurs d'intervention</span>
+        <div>{sectors.map((s) => <span class="tag">{s}</span>)}</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Témoignages</span>
+        <h2>Ce qu'en disent les clients</h2>
+      </div>
+      <div class="grid grid--2">
+        {testimonials.map((t) => (
+          <figure class="card">
+            <blockquote>« {t.quote} »</blockquote>
+            <figcaption>
+              <strong>{t.author}</strong>
+              <br />
+              <span class="muted">{t.role}</span>
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Ressources</span>
+        <h2>Articles récents</h2>
+      </div>
+      <div class="grid">
+        {articles.map((a) => (
+          <a class="card card--link" href={url(`/ressources/${a.id}`)}>
+            <span class="tag">{a.data.category}</span>
+            <h3>{a.data.title}</h3>
+            <p>{a.data.summary}</p>
+            <span class="more">Lire l'article →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CtaBanner />
+</BaseLayout>
+
+<style>
+  .hero__grid { display: grid; gap: 3rem; grid-template-columns: 1.2fr 0.8fr; align-items: center; }
+  .hero h1 { font-size: var(--text-3xl); max-width: 18ch; }
+  .hero__visual { display: grid; place-items: center; aspect-ratio: 4 / 5; border-radius: var(--radius-lg); background: var(--color-surface-alt); border: 1px dashed var(--color-border); color: var(--color-text-muted); text-align: center; }
+  .steps { list-style: none; padding: 0; margin: 0 0 2rem; display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); }
+  .stats { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); margin-bottom: 1.5rem; }
+  .stats > div { display: grid; gap: 0.25rem; }
+  .stats__value { font-family: var(--font-heading); font-size: var(--text-3xl); font-weight: 500; color: var(--color-primary); line-height: 1; }
+  .sectors { margin-top: 3rem; }
+  blockquote { margin: 0 0 1.25rem; font-family: var(--font-heading); font-size: var(--text-lg); }
+  figure { margin: 0; }
+  @media (max-width: 800px) {
+    .hero__grid { grid-template-columns: 1fr; }
+    .hero__visual { aspect-ratio: 16 / 10; }
+  }
+</style>

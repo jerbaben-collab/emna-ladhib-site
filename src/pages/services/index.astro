@@ -1,0 +1,45 @@
+---
+import { url } from "../../utils/url";
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import CtaBanner from "../../components/CtaBanner.astro";
+
+const services = (await getCollection("services")).sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout
+  title="Services"
+  description="Consultation, coaching et formation en amélioration continue et Lean Six Sigma pour les organisations du Québec."
+>
+  <PageHero
+    eyebrow="Services"
+    title="Un accompagnement adapté à votre maturité"
+    lead="Que vous fassiez vos premiers pas en amélioration continue ou que vous souhaitiez accélérer une démarche existante, il y a une formule pour vous."
+  />
+
+  <section class="section">
+    <div class="container services">
+      {services.map((s) => (
+        <article class="card service">
+          <div>
+            <h2>{s.data.title}</h2>
+            <p class="lead">{s.data.summary}</p>
+            <a class="btn btn--primary" href={url(`/services/${s.id}`)}>Découvrir l'offre {s.data.title.toLowerCase()}</a>
+          </div>
+          <ul class="check-list">
+            {s.data.offers.map((o) => <li>{o.title}</li>)}
+          </ul>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <CtaBanner title="Vous ne savez pas par où commencer ?" text="C'est justement l'objectif de la rencontre exploratoire : clarifier votre besoin et vous orienter vers la bonne formule." />
+</BaseLayout>
+
+<style>
+  .services { display: grid; gap: 1.5rem; }
+  .service { display: grid; gap: 2rem; grid-template-columns: 1.4fr 1fr; align-items: center; padding: clamp(1.5rem, 4vw, 3rem); }
+  @media (max-width: 760px) { .service { grid-template-columns: 1fr; } }
+</style>

@@ -1,0 +1,42 @@
+---
+import { url } from "../../utils/url";
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+
+const articles = (await getCollection("articles", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+);
+const formatDate = (d: Date) => d.toLocaleDateString("fr-CA", { day: "numeric", month: "long", year: "numeric" });
+---
+
+<BaseLayout
+  title="Ressources"
+  description="Articles, outils et conseils pratiques en Lean, Six Sigma et amélioration continue."
+>
+  <PageHero
+    eyebrow="Ressources"
+    title="Articles et outils pour progresser"
+    lead="Des contenus pratiques pour comprendre et appliquer l'amélioration continue dans votre organisation."
+  />
+
+  <section class="section">
+    <div class="container grid">
+      {articles.map((a) => (
+        <a class="card card--link" href={url(`/ressources/${a.id}`)}>
+          <div>
+            <span class="tag">{a.data.category}</span>
+          </div>
+          <h2 class="title">{a.data.title}</h2>
+          <p>{a.data.summary}</p>
+          <time class="muted" datetime={a.data.date.toISOString()}>{formatDate(a.data.date)}</time>
+          <span class="more">Lire l'article →</span>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .title { font-size: var(--text-xl); }
+</style>

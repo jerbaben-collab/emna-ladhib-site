@@ -1,0 +1,89 @@
+---
+import { url } from "../utils/url";
+import { nav, site } from "../data/site";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const path = Astro.url.pathname.slice(base.length).replace(/\/$/, "") || "/";
+const isActive = (href: string) => (href === "/" ? path === "/" : path.startsWith(href));
+---
+
+<header class="header">
+  <div class="container header__inner">
+    <a class="brand" href={url("/")} aria-label={`${site.name}, accueil`}>
+      <span class="brand__mark" aria-hidden="true">EL</span>
+      <span class="brand__text">
+        <strong>{site.name}</strong>
+        <small>{site.credentials}</small>
+      </span>
+    </a>
+
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+      Menu
+    </button>
+
+    <nav id="site-nav" class="nav" aria-label="Navigation principale">
+      <ul>
+        {
+          nav.map((item) => (
+            <li class={item.children ? "has-children" : undefined}>
+              <a href={url(item.href)} aria-current={isActive(item.href) ? "page" : undefined}>
+                {item.label}
+              </a>
+              {item.children && (
+                <ul class="subnav">
+                  {item.children.map((child) => (
+                    <li>
+                      <a href={url(child.href)}>{child.label}</a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+      <a class="btn btn--primary nav__cta" href={url("/contact")}>Contact</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .header { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--color-bg) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--color-border); }
+  .header__inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 72px; }
+  .brand { display: flex; align-items: center; gap: 0.65rem; color: var(--color-text); text-decoration: none; }
+  .brand__mark { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: var(--color-primary); color: var(--color-primary-contrast); font-family: var(--font-heading); }
+  .brand__text { display: grid; line-height: 1.2; }
+  .brand__text small { color: var(--color-text-muted); font-size: 0.75rem; }
+
+  .nav { display: flex; align-items: center; gap: 1.5rem; }
+  .nav ul { list-style: none; margin: 0; padding: 0; }
+  .nav > ul { display: flex; gap: 1.5rem; }
+  .nav a:not(.btn) { color: var(--color-text); text-decoration: none; font-size: var(--text-sm); font-weight: 500; }
+  .nav a:not(.btn):hover, .nav a[aria-current="page"] { color: var(--color-primary); }
+  .nav a[aria-current="page"] { text-decoration: underline; text-underline-offset: 6px; }
+  .has-children { position: relative; }
+  .subnav { position: absolute; top: 100%; left: -1rem; min-width: 220px; padding: 0.5rem !important; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); box-shadow: var(--shadow-card); opacity: 0; visibility: hidden; transform: translateY(6px); transition: 0.15s; }
+  .subnav a { display: block; padding: 0.5rem 0.75rem; }
+  .has-children:hover .subnav, .has-children:focus-within .subnav { opacity: 1; visibility: visible; transform: none; }
+  .menu-toggle { display: none; }
+
+  @media (max-width: 960px) {
+    .menu-toggle { display: inline-flex; padding: 0.5rem 1rem; border: 1px solid var(--color-border); border-radius: var(--radius-pill); background: var(--color-surface); font: inherit; font-weight: 600; cursor: pointer; }
+    .nav { display: none; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; align-items: stretch; padding: 1rem var(--gutter) 1.5rem; background: var(--color-bg); border-bottom: 1px solid var(--color-border); }
+    .nav.is-open { display: flex; }
+    .nav > ul { flex-direction: column; gap: 0.25rem; }
+    .nav a:not(.btn) { display: block; padding: 0.6rem 0; font-size: var(--text-base); }
+    .subnav { position: static; opacity: 1; visibility: visible; transform: none; box-shadow: none; border: 0; padding: 0 0 0 1rem !important; background: none; }
+    .subnav a { padding: 0.4rem 0 !important; }
+  }
+</style>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>(".menu-toggle");
+  const nav = document.getElementById("site-nav");
+  toggle?.addEventListener("click", () => {
+    const open = toggle.getAttribute("aria-expanded") === "true";
+    toggle.setAttribute("aria-expanded", String(!open));
+    nav?.classList.toggle("is-open", !open);
+  });
+</script>

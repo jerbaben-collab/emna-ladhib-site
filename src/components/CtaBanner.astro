@@ -1,0 +1,29 @@
+---
+import { url } from "../utils/url";
+import { site } from "../data/site";
+
+interface Props {
+  title?: string;
+  text?: string;
+}
+const {
+  title = "Parlons de votre prochain défi",
+  text = "Une première rencontre de 30 minutes, sans engagement, pour comprendre votre contexte et voir comment je peux vous aider.",
+} = Astro.props;
+---
+
+<section class="section section--dark">
+  <div class="container cta">
+    <div>
+      <h2>{title}</h2>
+      <p class="lead">{text}</p>
+    </div>
+    <a class="btn btn--light" href={url(site.cta.href)}>{site.cta.label} →</a>
+  </div>
+</section>
+
+<style>
+  .cta { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 2rem; }
+  .cta h2 { margin-bottom: 0.5rem; }
+  .cta .lead { margin: 0; }
+</style>

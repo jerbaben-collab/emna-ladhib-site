@@ -1,0 +1,21 @@
+---
+// Inscription à l'infolettre. TODO(backend) : brancher sur l'outil d'envoi retenu (Brevo, Mailchimp…)
+// et ajouter le double opt-in exigé par la LCAP (loi canadienne anti-pourriel).
+---
+
+<div>
+  <p class="footer__title">Infolettre</p>
+  <p class="muted">Outils, articles et dates des prochaines formations, une fois par mois.</p>
+  <form class="newsletter" action="#" method="post" data-todo="newsletter">
+    <label class="visually-hidden" for="newsletter-email">Courriel</label>
+    <input id="newsletter-email" name="email" type="email" placeholder="votre@courriel.ca" required autocomplete="email" />
+    <button class="btn btn--primary" type="submit">S'inscrire</button>
+  </form>
+</div>
+
+<style>
+  .newsletter { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .newsletter input { flex: 1 1 180px; min-height: 48px; padding: 0 0.9rem; border: 1px solid var(--color-border); border-radius: var(--radius-pill); font: inherit; }
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .footer__title { font-weight: 600; margin-bottom: 0.75rem; }
+</style>

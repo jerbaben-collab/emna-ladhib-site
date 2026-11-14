@@ -1,0 +1,121 @@
+---
+import { url } from "../utils/url";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import { site } from "../data/site";
+
+const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? "";
+const needs = ["Consultation", "Coaching", "Formation", "Autre / je ne sais pas encore"];
+---
+
+<BaseLayout
+  title="Contact"
+  description="Demandez une rencontre exploratoire gratuite de 30 minutes pour discuter de vos enjeux d'amélioration continue."
+>
+  <PageHero
+    eyebrow="Contact"
+    title="Demandez une rencontre exploratoire"
+    lead="30 minutes, sans engagement, pour comprendre votre contexte et voir ensemble quelle serait la prochaine étape. Je réponds sous 2 jours ouvrables."
+  />
+
+  <section class="section">
+    <div class="container layout">
+      <form class="form card" id="contact-form" method="post" action={endpoint || undefined} data-endpoint={endpoint}>
+        <div class="grid grid--2">
+          <div class="field">
+            <label for="name">Nom complet *</label>
+            <input id="name" name="name" required autocomplete="name" />
+          </div>
+          <div class="field">
+            <label for="email">Courriel *</label>
+            <input id="email" name="email" type="email" required autocomplete="email" />
+          </div>
+          <div class="field">
+            <label for="organization">Organisation</label>
+            <input id="organization" name="organization" autocomplete="organization" />
+          </div>
+          <div class="field">
+            <label for="phone">Téléphone</label>
+            <input id="phone" name="phone" type="tel" autocomplete="tel" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="need">Votre besoin</label>
+          <select id="need" name="need">
+            {needs.map((n) => <option>{n}</option>)}
+          </select>
+        </div>
+        <div class="field">
+          <label for="subject">Sujet</label>
+          <input id="subject" name="subject" />
+        </div>
+        <div class="field">
+          <label for="message">Votre message *</label>
+          <textarea id="message" name="message" required placeholder="Décrivez brièvement votre contexte et ce que vous aimeriez améliorer."></textarea>
+        </div>
+        <label class="consent">
+          <input type="checkbox" name="consent" required />
+          <span>
+            J'accepte que mes renseignements soient utilisés uniquement pour répondre à ma demande, conformément à la
+            <a href={url("/confidentialite")}>politique de confidentialité</a>. *
+          </span>
+        </label>
+        <button class="btn btn--primary" type="submit">Envoyer ma demande</button>
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </form>
+
+      <aside>
+        <h2>Coordonnées</h2>
+        <p>
+          <strong>Courriel</strong><br /><a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+        </p>
+        <p>
+          <strong>Téléphone</strong><br /><a href={`tel:${site.contact.phone.replace(/[^\d+]/g, "")}`}>{site.contact.phone}</a>
+        </p>
+        <p><strong>Région</strong><br />{site.contact.region}<br />Mandats partout au Québec et à distance</p>
+        <p>
+          <strong>LinkedIn</strong><br /><a href={site.social.linkedin} target="_blank" rel="noopener noreferrer">Voir le profil ↗</a>
+        </p>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .layout { display: grid; gap: 3rem; grid-template-columns: 1.5fr 1fr; align-items: start; }
+  aside h2 { font-size: var(--text-xl); }
+  @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("#contact-form");
+  const status = form?.querySelector<HTMLElement>(".form-status");
+  const subject = form?.querySelector<HTMLInputElement>("#subject");
+
+  // Préremplit le sujet depuis ?sujet=… (liens « Demander cette formation »).
+  const preset = new URLSearchParams(location.search).get("sujet");
+  if (subject && preset) subject.value = preset;
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    if (!status) return;
+    const endpoint = form.dataset.endpoint;
+    if (!endpoint) {
+      status.textContent = "Formulaire en cours de configuration (PUBLIC_FORM_ENDPOINT non défini).";
+      return;
+    }
+    status.textContent = "Envoi en cours…";
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        body: new FormData(form),
+        headers: { Accept: "application/json" },
+      });
+      if (!response.ok) throw new Error(String(response.status));
+      form.reset();
+      status.textContent = "Merci ! Votre demande a bien été envoyée. Je vous réponds sous 2 jours ouvrables.";
+    } catch {
+      status.textContent = "Une erreur est survenue. Écrivez-moi directement par courriel.";
+    }
+  });
+</script>

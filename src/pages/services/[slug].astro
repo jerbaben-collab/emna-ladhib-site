@@ -1,0 +1,56 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import CtaBanner from "../../components/CtaBanner.astro";
+
+export async function getStaticPaths() {
+  const services = await getCollection("services");
+  return services.map((service) => ({ params: { slug: service.id }, props: { service } }));
+}
+
+const { service } = Astro.props;
+const { Content } = await render(service);
+const { title, summary, offers, forWho, deliverables } = service.data;
+---
+
+<BaseLayout title={title} description={summary}>
+  <PageHero eyebrow="Services" title={title} lead={summary} />
+
+  <section class="section">
+    <div class="container prose">
+      <Content />
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-head">
+        <h2>Ce que je vous propose</h2>
+      </div>
+      <div class="grid grid--2">
+        {offers.map((o) => (
+          <article class="card">
+            <h3>{o.title}</h3>
+            <p>{o.text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container grid grid--2">
+      <div>
+        <h2>Pour qui ?</h2>
+        <ul class="check-list">{forWho.map((item) => <li>{item}</li>)}</ul>
+      </div>
+      <div>
+        <h2>Ce que vous obtenez</h2>
+        <ul class="check-list">{deliverables.map((item) => <li>{item}</li>)}</ul>
+      </div>
+    </div>
+  </section>
+
+  <CtaBanner />
+</BaseLayout>

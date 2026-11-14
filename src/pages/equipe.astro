@@ -1,0 +1,55 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import CtaBanner from "../components/CtaBanner.astro";
+
+const members = await Promise.all(
+  (await getCollection("equipe"))
+    .sort((a, b) => a.data.order - b.data.order)
+    .map(async (member) => ({ ...member, Content: (await render(member)).Content })),
+);
+---
+
+<BaseLayout
+  title="Équipe et formateurs"
+  description="Des formatrices et formateurs certifiés Lean Six Sigma, issus du terrain, pour faire progresser vos équipes."
+>
+  <PageHero
+    eyebrow="Équipe"
+    title="Des formateurs certifiés, issus du terrain"
+    lead="Une expertise reconnue en amélioration continue, et surtout l'expérience concrète de sa mise en œuvre en organisation."
+  />
+
+  <section class="section">
+    <div class="container grid">
+      {members.map(({ data, Content }) => (
+        <article class="card member">
+          <div class="member__photo" aria-hidden="true">
+            {data.photo ? <img src={data.photo} alt="" loading="lazy" /> : <span>Photo</span>}
+          </div>
+          <h2 class="member__name">{data.name}</h2>
+          {data.credentials && <p class="muted member__creds">{data.credentials}</p>}
+          <p><strong>{data.role}</strong></p>
+          <div>{data.certifications.map((c) => <span class="tag">{c}</span>)}</div>
+          <div class="member__bio"><Content /></div>
+          {data.linkedin && (
+            <a class="more" href={data.linkedin} target="_blank" rel="noopener noreferrer">
+              LinkedIn de {data.name} ↗
+            </a>
+          )}
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <CtaBanner />
+</BaseLayout>
+
+<style>
+  .member__photo { display: grid; place-items: center; aspect-ratio: 1; margin-bottom: 1.25rem; border-radius: var(--radius-md); background: var(--color-surface-alt); color: var(--color-text-muted); overflow: hidden; }
+  .member__photo img { width: 100%; height: 100%; object-fit: cover; }
+  .member__name { font-size: var(--text-xl); margin-bottom: 0.15rem; }
+  .member__creds { margin-bottom: 0.5rem; }
+  .member__bio { margin-top: 1rem; font-size: var(--text-sm); color: var(--color-text-muted); }
+</style>

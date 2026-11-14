@@ -1,0 +1,44 @@
+---
+import { url } from "../../utils/url";
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import CtaBanner from "../../components/CtaBanner.astro";
+
+const formations = (await getCollection("formations")).sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout
+  title="Formations"
+  description="Catalogue de formations Lean et Lean Six Sigma : introduction au Lean, cartographie VSM, Kaizen, Green Belt, résolution de problèmes A3."
+>
+  <PageHero
+    eyebrow="Catalogue"
+    title="Formations Lean et Lean Six Sigma"
+    lead="Des formations pratiques, données en entreprise, en inter-entreprises ou en ligne, et adaptables à votre secteur."
+  >
+    <p class="placeholder-note">Catalogue provisoire : titres, durées et formats à valider avec la cliente.</p>
+  </PageHero>
+
+  <section class="section">
+    <div class="container grid">
+      {formations.map((f) => (
+        <a class="card card--link" href={url(`/formations/${f.id}`)}>
+          <div>
+            <span class="tag">{f.data.level}</span>
+            <span class="tag">{f.data.duration}</span>
+          </div>
+          <h3>{f.data.title}</h3>
+          <p>{f.data.summary}</p>
+          <p class="muted">{f.data.format.join(" · ")}</p>
+          <span class="more">Voir le programme →</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <CtaBanner
+    title="Une formation sur mesure ?"
+    text="Toutes les formations peuvent être adaptées à vos processus, à votre secteur et à votre horaire."
+  />
+</BaseLayout>

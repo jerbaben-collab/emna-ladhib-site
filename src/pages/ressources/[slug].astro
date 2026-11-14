@@ -1,0 +1,32 @@
+---
+import { url } from "../../utils/url";
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PageHero from "../../components/PageHero.astro";
+import CtaBanner from "../../components/CtaBanner.astro";
+
+export async function getStaticPaths() {
+  const articles = await getCollection("articles", ({ data }) => !data.draft);
+  return articles.map((article) => ({ params: { slug: article.id }, props: { article } }));
+}
+
+const { article } = Astro.props;
+const { Content } = await render(article);
+const { title, summary, date, category } = article.data;
+const formatted = date.toLocaleDateString("fr-CA", { day: "numeric", month: "long", year: "numeric" });
+---
+
+<BaseLayout title={title} description={summary}>
+  <PageHero eyebrow={category} title={title} lead={summary}>
+    <time class="muted" datetime={date.toISOString()}>Publié le {formatted}</time>
+  </PageHero>
+
+  <article class="section">
+    <div class="container prose">
+      <Content />
+      <p><a href={url("/ressources")}>← Tous les articles</a></p>
+    </div>
+  </article>
+
+  <CtaBanner />
+</BaseLayout>

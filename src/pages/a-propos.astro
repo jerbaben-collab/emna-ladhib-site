@@ -1,0 +1,120 @@
+---
+import { url } from "../utils/url";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHero from "../components/PageHero.astro";
+import CtaBanner from "../components/CtaBanner.astro";
+import { site } from "../data/site";
+import { values } from "../data/home";
+
+// TODO(cliente) : compléter le parcours à partir du profil LinkedIn officiel.
+const timeline = [
+  { period: "[Année]", title: "Baccalauréat en ingénierie", place: "[Établissement]" },
+  { period: "[Année – Année]", title: "[Poste]", place: "[Organisation, secteur]" },
+  { period: "[Année – Année]", title: "[Poste en amélioration continue]", place: "[Organisation, secteur]" },
+  { period: "[Année]", title: "Certification Lean Six Sigma Black Belt", place: "[Organisme certificateur]" },
+  { period: "[Année]", title: "Fondation de l'entreprise", place: "[Nom commercial à confirmer]" },
+];
+---
+
+<BaseLayout
+  title="À propos"
+  description="Ingénieure et Lean Six Sigma Black Belt, Emna Ladhib aide les organisations à améliorer leurs processus avec rigueur et humanité."
+>
+  <PageHero
+    eyebrow="À propos"
+    title="Ingénieure de formation, passionnée par le travail bien fait"
+    lead={`${site.name}, ${site.credentials}. J'aide les organisations à faire mieux avec ce qu'elles ont, en mettant les personnes au cœur de l'amélioration.`}
+  />
+
+  <section class="section">
+    <div class="container about">
+      <div class="about__photo" role="img" aria-label="Emplacement de la photo d'Emna Ladhib">Photo (à fournir)</div>
+      <div class="prose">
+        <h2>Qui suis-je ?</h2>
+        <p>
+          [À valider] Ingénieure de formation et certifiée Lean Six Sigma Black Belt, j'ai consacré ma carrière à une
+          question simple : <strong>comment faire mieux, ensemble ?</strong>
+        </p>
+        <p>
+          [À compléter] Au fil de mes expériences dans les secteurs [X] et [Y], j'ai piloté des projets qui ont permis
+          de [résultat chiffré : réduire les délais de X %, diminuer les erreurs de Y %…].
+        </p>
+        <p>
+          Aujourd'hui, je mets cette expertise au service des organisations qui veulent améliorer leur performance sans
+          épuiser leurs équipes : en observant le travail réel, en s'appuyant sur les données et en faisant des
+          employés les acteurs du changement.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container grid grid--2">
+      <div>
+        <span class="eyebrow">Mission</span>
+        <h2>Rendre les organisations autonomes dans leur amélioration</h2>
+      </div>
+      <p class="lead">
+        Ma mission est d'outiller les gestionnaires et les équipes pour qu'ils deviennent capables d'améliorer
+        eux-mêmes leurs façons de faire, longtemps après la fin de mon mandat.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Valeurs</span>
+        <h2>Ce en quoi je crois</h2>
+      </div>
+      <div class="grid">
+        {values.map((v) => (
+          <article class="card">
+            <h3>{v.title}</h3>
+            <p>{v.text}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">Parcours</span>
+        <h2>Formation et expérience</h2>
+        <p class="placeholder-note">Dates et intitulés à compléter à partir du profil LinkedIn officiel.</p>
+      </div>
+      <ol class="timeline">
+        {timeline.map((t) => (
+          <li>
+            <span class="muted">{t.period}</span>
+            <div>
+              <strong>{t.title}</strong>
+              <br />
+              <span class="muted">{t.place}</span>
+            </div>
+          </li>
+        ))}
+      </ol>
+      <div class="btn-row">
+        <a class="btn btn--outline" href={url("/equipe")}>Voir l'équipe et les formateurs</a>
+        <a class="btn btn--outline" href={site.social.linkedin} target="_blank" rel="noopener noreferrer">Profil LinkedIn ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <CtaBanner />
+</BaseLayout>
+
+<style>
+  .about { display: grid; gap: 3rem; grid-template-columns: 360px 1fr; align-items: start; }
+  .about__photo { display: grid; place-items: center; aspect-ratio: 4 / 5; border-radius: var(--radius-lg); background: var(--color-surface-alt); border: 1px dashed var(--color-border); color: var(--color-text-muted); }
+  .timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.25rem; max-width: 760px; }
+  .timeline li { display: grid; grid-template-columns: 150px 1fr; gap: 1rem; padding-bottom: 1.25rem; border-bottom: 1px solid var(--color-border); }
+  @media (max-width: 760px) {
+    .about { grid-template-columns: 1fr; }
+    .about__photo { aspect-ratio: 16 / 10; }
+    .timeline li { grid-template-columns: 1fr; gap: 0.25rem; }
+  }
+</style>
